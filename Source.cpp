@@ -1,529 +1,272 @@
-#define _USE_MATH_DEFINES
+//Decaux Kevin C1
+
 #include <stdio.h>
-#include <math.h>
-#include <time.h>
+#include <iostream>
+using namespace std;
 #include <string.h>
 #include <stdlib.h>
-#include <iostream>
-#include <iomanip>
-using namespace std;
+#include <time.h>
 
-class point
-{
-public:
-	point(const point&);
-	point(int, int);
-	point(int);
-	point();
-	~point();
-	void rotation(int);
-	void polaire();
-	void cartesienne();
-	void initialise(int, int);
-	void affiche();
-	void deplace(int dx, int dy);
-	void homothetie(int k);
-	int getX();
-	int getY();
-private:
-	double x, y;
-	double rho, theta;
-};
 
-point::point()
-{
-	cout << "constructeur Point vide" << endl;
-	x = 0;
-	y = 0;
-	polaire();
-}
+string nom, niv, prem;
+int nb_allumettes;
+void saisie();
+void affichage();
 
-point::point(int p)
-{
-	cout << "constructeur Point 1 int" << endl;
-	x = p;
-	y = p;
-	polaire();
-}
+void miseAjour(int nb);
+void jeualterne();
 
-point::point(int px, int py)
-{
-	cout << "constructeur Point 2int" << endl;
-	x = px;
-	y = py;
-	polaire();
-}
+//fonction de saisie de paramètre
+//qui contrôle chaque paramètre saisie 
+// de façon globale 
 
-point::point(const point& p)
+void saisie()
 {
-	cout << "constructeur point recopie" << endl;
-	x = p.x;
-	y = p.y;
-	polaire();
-}
-
-point::~point()
-{
-	cout << "destructeur point" << endl;
+    char nb_allumette2[30];
+    cout << "bonjour quel est votre nom?" << endl;
+    cin >> nom;                                                 /* saisie du nom */
+    cout << endl << "quelle est la difficulté que vous souhaitez ?(naïf ou expert, N/E)" << endl;
+    cin >> niv;
+    while ((niv != "n") and (niv != "N") and (niv != "e") and (niv != "E")) {
+        cout << endl << "La difficulté a été mal indiquée, veuillez nous la réindiquer avec les caractères n ou e." << endl;
+        cin >> niv;                                             /*saisie contrôlée de la difficulté*/
+    }
+    cout << endl << "Avec combien d'allumettes voulez-vous jouer?" << endl;
+    cin >> nb_allumette2;
+    nb_allumettes = atoi(nb_allumette2);    /*on garde uniquement les chiffre rentrer*/
+    while ((nb_allumettes <= 0) or (nb_allumettes > 30)) {
+        cout << endl << "la quantité d'allumette doit être comprise entre 0 et 30, veuillez en rentrer une nouvelle" << endl;
+        cin >> nb_allumette2;
+        nb_allumettes = atoi(nb_allumette2);             /*saisie contrôlée du nombre d'allumette par chaine de caractère */
+    }
+    cout << endl << "qui commence? (ordinateur ou " << nom << "?)" << endl;
+    cin >> prem;
+    while ((prem != "ordinateur") and (prem != nom)) {
+        cout << endl << "veuillez préciser la personne qui commence ( entre ordinateur et " << nom << "?)" << endl;
+        cin >> prem;                                    /*saisie contrôlée du joueur qui commence la partie */
+    }
+    cout << endl;
 }
 
 
+//fonction qui affiche le nombre d'allumette encore restante
+// grâce à la variable globale qui ressence le nombre d'allumette
 
-void point::rotation(int alpha)
+void affichage()
 {
-	double radian;
-	radian = M_PI * alpha;
-	radian = radian / 180;
-	theta = theta + radian;
-	cartesienne();
+    int reste;
+    reste = nb_allumettes % 5;
+    for (int i = 1; i <= nb_allumettes / 5; i = i + 1) {
+        for (int j = 1; j <= 5; j = 1 + j) {
+
+            cout << "|";            /*affichage des allumettes par groupe de 5*/
+        }
+        cout << endl;
+    }
+    for (int u = 1; u <= reste; u = u + 1) {
+        cout << "|";          /* affichage de la dernière ligne d'allumettes si elle est inférieure à 5 */
+    }
+    cout << endl;
 }
 
-void point::cartesienne()
-{
-	x = rho * cos(theta);
-	y = rho * sin(theta);
-}
 
-void point::polaire()
-{
-	rho = sqrt(x * x + y * y);
-	theta = atan2(y, x);
-}
+// fonction permettant la mise à jour du nombre d'allumettes (variable globale) restante 
+//en prenant en paramètre les allumettes a retiré
 
-
-void point::initialise(int px, int py)
+void miseAjour(int nb)
 {
-	x = px;
-	y = py;
-	polaire();
+    nb_allumettes = nb_allumettes - nb;     /* mise à jour de la variable global contenant le nombre d'allumettes */
+    cout << endl << "il reste " << nb_allumettes << " allumettes:" << endl;
+    affichage();                /* appel de la fonction d'affichage après le retret d'allumettes */
 }
 
 
 
-
-void point::affiche()
+//fonction qui permet à l'ordinateur de choisir combien d'allumettes retirer en fonction du niveau
+int joueOrdi(string niv)
 {
-	cout << "x : " << x;
-	cout << "   y : " << y << endl;
-	cout << "theta : " << theta;
-	cout << "   rho : " << rho << endl;
-}
-
-
-
-
-void point::deplace(int dx, int dy)
-{
-	x = x + dx;
-	y = y + dy;
-	polaire();
-}
-
-
-void point::homothetie(int k)
-{
-	x = x * k;
-	y = y * k;
-	polaire();
-}
-
-
-int point::getX()
-{
-	return x;
-}
-
-int point::getY()
-{
-	return y;
-}
-
-
-
-
-class rectangle {
-private:
-	point p1, p2;
-public:
-	rectangle(const rectangle&);
-	rectangle(int, int, int, int);
-	rectangle(point, point);
-	rectangle(point, int, int);
-	rectangle();
-	~rectangle();
-	rectangle& operator=(const rectangle&);
-	void affiche();
-	void homothetie(int);
-	void rotation(int);
-	void deplace(int, int);
-	void initialise(int, int, int, int);
-	void initialise(point, int, int);
-};
-
-rectangle::rectangle() : p1(0, 0), p2(0, 0)
-{
-	cout << "constructeur Rectangle vide " << endl;
-}
-
-
-rectangle::rectangle(point pm, int l, int h) : p1(pm), p2(pm)
-{
-
-	cout << "constructeur Rectangle 1point " << endl;
-	p2.deplace(l, h);
-}
-
-
-rectangle::rectangle(point pm1, point pm2) : p1(pm1), p2(pm2)
-{
-	cout << "constructeur Rectangle 2point " << endl;
-}
-
-rectangle::rectangle(int x1, int y1, int x2, int y2) : p1(x1, y1), p2(x2, y2)
-{
-	cout << "constructeur Rectangle int " << endl;
-}
-
-rectangle::rectangle(const rectangle& r) : p1(r.p1), p2(r.p2)
-{
-	cout << "constructeur Rectangle recopie " << endl;
-}
-
-
-rectangle::~rectangle()
-{
-
-	cout << "destructeur Rectangle " << endl;
-}
-
-
-rectangle& rectangle::operator=(const rectangle& r)
-{
-	p1 = r.p1;
-	p2 = r.p2;
-	return *this;
-}
-
-
-void rectangle::affiche()
-{
-	cout << "p1 :  ";
-	p1.affiche();
-	cout << "p2 :  ";
-	p2.affiche();
-}
-
-void rectangle::homothetie(int k)
-{
-	p1.homothetie(k);
-	p2.homothetie(k);
-}
-
-void rectangle::rotation(int alpha)
-{
-	p1.rotation(alpha);
-	p2.rotation(alpha);
-}
-
-void rectangle::deplace(int dx, int dy)
-{
-	p1.deplace(dx, dy);
-	p2.deplace(dx, dy);
-}
-
-void rectangle::initialise(int x1, int y1, int x2, int y2)
-{
-	p1.initialise(x1, y1);
-	p2.initialise(x2, y2);
-}
-
-void rectangle::initialise(point pm, int l, int h)
-{
-	p1 = p2 = pm;
-	p2.deplace(l, h);
-}
-
-
-
-
-
-
-
-class bouton
-{
-private:
-	rectangle r;
-	string txt;
-public:
-	bouton(const bouton&);
-	bouton(int, int, int, int, char*);
-	bouton(point, point, char*);
-	bouton(point, int, int, char*);
-	bouton();
-	~bouton();
-	bouton& operator=(const bouton&);
-	void affiche();
-	void homothetie(int);
-	void rotation(int);
-	void deplace(int, int);
-	void initialise(int, int, int, int, char*);
-	void initialise(point, int, int, char*);
-};
-
-
-
-bouton::bouton() : r()
-{
-	txt = "";
-	cout << "constructeur Bouton vide " << endl;
-	int* tab = new int[23];
-}
-
-bouton::bouton(int x1, int y1, int x2, int y2, char* t) : r(x1, y1, x2, y2)
-{
-	txt = t;
-	cout << "constructeur Bouton int " << endl;
-}
-
-bouton::bouton(point pm1, point pm2, char* t) : r(pm1, pm2)
-{
-	txt = t;
-	cout << "constructeur Bouton 2point " << endl;
-}
-
-
-bouton::bouton(point pm, int l, int h, char* t) : r(pm, l, h)
-{
-	txt = t;
-	cout << "constructeur Bouton 1point " << endl;
-}
-
-
-bouton::bouton(const bouton& b) : r(b.r)
-{
-	txt = b.txt;
-	cout << "constructeur Bouton recopie " << endl;
-}
-
-
-bouton::~bouton()
-{
-	cout << "destructeur Bouton " << endl;
-}
-
-
-bouton& bouton::operator=(const bouton& b)
-{
-	r = b.r;
-	txt = b.txt;
-	return *this;
-}
-
-
-void bouton::affiche()
-{
-	r.affiche();
-	cout << "texte : " << txt << endl;
-}
-
-
-void bouton::homothetie(int k)
-{
-	r.homothetie(k);
-}
-
-
-void bouton::rotation(int alpha)
-{
-	r.rotation(alpha);
-}
-
-
-void bouton::deplace(int dx, int dy)
-{
-	r.deplace(dx, dy);
-}
-
-
-void bouton::initialise(int x1, int y1, int x2, int y2, char* t)
-{
-	r.initialise(x1, y1, x2, y2);
-	txt = t;
-}
-
-
-void bouton::initialise(point pm, int l, int h, char* t)
-{
-	r.initialise(pm, l, h);
-
-}
-
-class menuA {
-private:
-	point ancrage;
-	bouton* tab;
-	int pas;
-	int n;
-public:
-	menuA(const menuA&);
-	menuA(int, char*);
-	menuA(int, int, int, int, int, int, char*);
-	menuA(int, point, point, int, char*);
-	menuA();
-	~menuA();
-	menuA& operator=(const menuA&);
-	void affiche();
-	void homothetie(int);
-	void rotation(int);
-	void deplace(int, int);
-	void initialise(point, int);
-	void initialise(int, int, int, int, char*);
-	void initialise(point, int, int, int, char*);
-
-};
-
-menuA::menuA()
-{
-	ancrage.initialise(0, 0);
-	tab = NULL;
-	pas = 0;
-	n = 0;
-}
-
-menuA::menuA(int nb, char* txt)
-{
-	ancrage.initialise(10, 10);
-	tab = new bouton[n = nb];
-	pas = 20;
-	for (int i = 0; i < n; i++)
-	{
-		tab[i] = bouton((40 * i) - (10 * i) + ((i + 1) * 10), ancrage.getY(), (i + 1) * 40, ancrage.getY() - 10, txt);
-	}
-
+    int alleatoire;
+                            /* délai pour un affichage plus doux */
+    cout << endl << "Ordi joue" << endl;
+    srand(time(NULL));
+    if ((niv == "n") or (niv == "N")) {
+        if (nb_allumettes <= 3)
+        {
+            switch (nb_allumettes)       /* test pour connaitre la finalité de la partie*/
+            {
+            case 3:
+                alleatoire = 2;
+                break;
+            case 2:
+                alleatoire = 1;
+                break;
+            case 1:
+                alleatoire = 1;
+                break;
+            }
+
+        }
+        else
+        {
+            alleatoire = rand() % 3 + 1;
+            while (alleatoire > nb_allumettes) {
+                alleatoire = rand() % 3 + 1;        /* choix aléatoire d'un nombre d'allumettes contrôlée*/
+            }
+        }
+        
+        cout << endl << "l'ordinateur retire " << alleatoire << " allumettes" << endl;
+        return alleatoire;
+    }
+    else {
+        if (((nb_allumettes % 4) - 1) != 0) {       /* test sur le nombre d'allumettes pour savoir si le complément à 4 est possible */
+            cout << endl << "l'ordinateur retire " << ((nb_allumettes - 1) % 4) << " allumettes" << endl;
+            return ((nb_allumettes - 1) % 4);
+        }
+        else {
+            alleatoire = (rand() % 3 + 1);
+            while (alleatoire > nb_allumettes) {
+                alleatoire = (rand() % 3 + 1);
+            }
+            cout << endl << "l'ordinateur retire " << alleatoire << " allumettes" << endl;
+            return alleatoire;              /* renvoi d'un nombre aléatoire contrôlé car le joueur a joué le produit a 4 du nombre d'allumette */
+        }
+    }
+    return 0;
 
 }
 
 
-menuA::menuA(int nb, int x, int y, int l, int h, int p, char* txt)
+// fonction permettant la saisie contrôlée du nombre d'allumette que le joueur veut retiré ainsi que le test d'abandon
+
+
+int joueJoueur(string nom)
 {
-	ancrage.initialise(x, y);
-	tab = new bouton[n = nb];
-	pas = p;
-	for (int i = 0; i < n; i++)
-	{
-		tab[i] = bouton(ancrage, l, h, txt);
-		ancrage.deplace(pas, 0);
-	}
+    int nb, sortieabbandon = 0;
+    char nbtest[10], nbabandon[10] = "0";  /* variable permettant le test pour connaître le nombre d'allumettes à retiré */
+    string abandon;     /* variable utilisée pour savoir si le joueur abandonne ou non */
+   
+    cout << endl << nom << " joue" << endl;
+    cout << endl << "combien voulez-vous retirer d'allumettes?" << endl;
+    cin >> nbtest;
+    nb = atoi(nbtest);      /* saisie du nombre d'allumettes à retiré*/
+    if (strcmp(nbtest, nbabandon) == 0) {  /* test pour savoir si le nombre d'allumettes correspond à celui pour abandonné*/
+        nb = 0;
+    }
+    abandon = "non";
+    while ((nb > 3) or (nb > nb_allumettes) or (nb < 1))
+    {
+        if (nb == 0) {
+            cout << endl << "voulez-vous abandonner?" << endl;
+            cin >> abandon;
+            if (abandon == "oui" || abandon == "o" || abandon == "O" || abandon == "OUI")       /*saisie et test si le joueur veut abandonner la partie */ {
+                cout << endl << "l'abandon est confirmé!" << endl;
+                nb = 1;
+                sortieabbandon = 1;
+            }
+            else {
+                cout << endl << "veuillez repréciser le nombre d'allumettes à retirer" << endl;
+                cin >> nbtest;
+                nb = atoi(nbtest);
+                if (strcmp(nbtest, nbabandon) == 0)
+                {
+                    nb = 0;                     /*contrôle de la saisie du nombre d'allumettes si le joueur refuse d'abandonner*/
+                }
+            }
+        }
+        else {
+
+            cout << endl << "la valeur est incorrecte veuillez en ressaisir une valeur" << endl;
+            cin >> nbtest;
+            nb = atoi(nbtest);          /* contrôle de la saisie du nombre d'allumettes */
+            if (strcmp(nbtest, nbabandon) == 0)  /* contrôle pour demander au joueur s'il veut abandonner */
+            {
+                nb = 903;
+            }
+        }
+    }
+    if (sortieabbandon == 1) {
+        nb = -1;                        /* si le joueur abandonne on renvoie une valeur prédéfinie pour arrêter le jeu */
+    }
+    return nb;
 }
 
+// procédure faisant jouer de façon alternative le joueur et l'ordinateur en utilisant les autres procédures ou fonctions
+// de plus la procédure affiche le vainqueur ou l'abandon du joueur 
 
-menuA::menuA(int nb, point pm, point pm2, int l, char* txt)
+void jeualterne()
 {
-	ancrage = pm;
-	tab = new bouton[n = nb];
-	pas = l;
-	for (int i = 0; i < n; i++)
-	{
-		tab[i] = bouton(ancrage, pm2, txt);
-		ancrage.deplace(pas, 0);
-	}
+    int tour, nb;
+    if (prem == nom)
+    {                       /* définition si le joueur commence ou pas */
+        tour = 1;
+    }
+    else
+    {
+        tour = 0;
+    }
+    while (nb_allumettes != 0)          /* le jeu fonctionne tant qu'il y a des allumettes */
+    {
+        if (tour == 0)
+        {
+            nb = joueOrdi(niv);
+            
+            miseAjour(nb);
+            tour = 1;
+        }
+        else {
+
+            nb = joueJoueur(nom);
+            if (nb == -1)           /* test si le nombre d'allumettes a retirer récupéré est celui pour l'abandon */
+            {
+                tour = 3;
+                nb_allumettes = 0;
+            }
+            else
+            {
+                
+                miseAjour(nb);
+                tour = 0;
+            }
+        }
+    }
+    switch (tour)       /* test pour connaitre la finalité de la partie*/
+    {
+    case 0:
+        cout << endl << "Le vainqueur est l'ordinateur !" << endl;
+        break;
+    case 1:
+        cout << endl << "Le vainqueur est " << nom << " !" << endl;
+        break;
+    default:
+        cout << endl << "le joueur a donc abandonné !";
+        break;
+    }
+
 }
 
-
-menuA::menuA(const menuA& m)
-{
-	ancrage = m.ancrage;
-	n = m.n;
-	pas = m.pas;
-	tab = new bouton[n];
-	for (int i = 0; i < n; i++)
-	{
-		tab[i] = m.tab[i];
-	}
-}
-
-
-
-void menuA::affiche()
-{
-	for (int i = 0; i < n; i++)
-	{
-		tab[i].affiche();
-	}
-}
-
-menuA::~menuA()
-{
-
-	delete[] tab;
-}
-
-
-menuA& menuA::operator=(const menuA& m)
-{
-	ancrage = m.ancrage;
-	n = m.n;
-	pas = m.pas;
-	delete[] tab;
-	tab = new bouton[n];
-	for (int i = 0; i < n; i++)
-	{
-		tab[i] = m.tab[i];
-	}
-	return *this;
-}
-
-
-void menuA::homothetie(int k)
-{
-	for (int i = 0; i < n; i++)
-	{
-		tab[i].homothetie(k);
-	}
-}
-
-
-void menuA::rotation(int alpha)
-{
-	for (int i = 0; i < n; i++)
-	{
-		tab[i].rotation(alpha);
-	}
-}
-
-
-void menuA::deplace(int dx, int dy)
-{
-	for (int i = 0; i < n; i++)
-	{
-		tab[i].deplace(dx, dy);
-	}
-}
-
-
-void menuA::initialise(point pm, int n, int l, int h, char* txt)
-{
-	ancrage = pm;
-	delete[] tab;
-	tab = new bouton[n];
-	for (int i = 0; i < n; i++)
-	{
-		tab[i] = bouton(ancrage, l, h, txt);
-		ancrage.deplace(pas, 0);
-	}
-}
 
 
 
 int main()
 {
+    saisie();
+    affichage();
+    jeualterne();
 
-	int tab[126];
-	for (int i = 0; i < 126; i++)
-	{
-		tab[i] = i;
-	}
-	
-	// print the lenth of tab 
-	cout << "the lenth of tab is : " << size(tab) << endl;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
