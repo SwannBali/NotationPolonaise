@@ -5,7 +5,7 @@ namespace mahric_operation_polonaise
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             List<string> list = Saisie();
             
