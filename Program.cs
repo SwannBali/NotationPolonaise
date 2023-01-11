@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace mahric_operation_polonaise
@@ -7,9 +7,13 @@ namespace mahric_operation_polonaise
     {
         private static void Main(string[] args)
         {
-            List<string> list = Saisie();
+            List<string> list;
+            if (! ((list = Saisie())== null))
+            {
+                Affichage(Resolution(list));
+            }
             
-            Affichage(Resolution(list));
+           
            
 
         }
@@ -39,6 +43,8 @@ namespace mahric_operation_polonaise
                 }
                 else
                 {
+
+                    
                     return null;
                 }
             }
@@ -101,11 +107,13 @@ namespace mahric_operation_polonaise
             }
         }
 
+
         /// <summary>
-        /// 
+        /// Fonction qui renvoie vraie si le caractère est un opérateur
         /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
+        /// <param name="str">Carractère a vérifié</param>
+        /// <returns> Booléen vrai si opérateur
+        /// faux si non opérateur </returns>
         private static bool Is_Operatore(char str)
         {
             if (str == '+' || str == '-' || str == '*' || str == '/')
@@ -207,3 +215,4 @@ namespace mahric_operation_polonaise
 
     }
 }
+
