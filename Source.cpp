@@ -153,18 +153,49 @@ namespace mahric_operation_polonaise
             switch (list[index_first_operator])
             {
                 case "+":
-                    
-                    result = int.Parse(list[index_first_operator - 2]) + int.Parse(list[index_first_operator - 1]);
-                    break;
+                    try
+                    {
+                        result = int.Parse(list[index_first_operator - 2]) + int.Parse(list[index_first_operator - 1]);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("errer");
+                        return null;
+                    }
                 case "-":
-                    result = int.Parse(list[index_first_operator - 2]) - int.Parse(list[index_first_operator - 1]);
-                    break;
+                    try
+                    {
+                        result = int.Parse(list[index_first_operator - 2]) - int.Parse(list[index_first_operator - 1]);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("errer");
+                        return null;
+                    }
                 case "*":
-                    result = int.Parse(list[index_first_operator - 2]) * int.Parse(list[index_first_operator - 1]);
-                    break;
+                    try
+                    {
+                        result = int.Parse(list[index_first_operator - 2]) * int.Parse(list[index_first_operator - 1]);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("erreur");
+                        return null;
+                    }
                 case "/":
-                    result = int.Parse(list[index_first_operator - 2]) / int.Parse(list[index_first_operator - 1]);
-                    break;
+                    try
+                    {
+                        result = int.Parse(list[index_first_operator - 2]) / int.Parse(list[index_first_operator - 1]);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Erreur");
+                        return null;
+                    }
                 default:
                     Console.WriteLine("Erreur");
                     return null;
@@ -206,4 +237,3 @@ namespace mahric_operation_polonaise
 
     }
 }
-
