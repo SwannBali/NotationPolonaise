@@ -129,7 +129,7 @@ namespace mahric_operation_polonaise
             while (list.Count > 1)
             {
                 index_first_operator = Find_Index_First_Operator(list);
-                if (index_first_operator == -1 || index_first_operator <2 || index_first_operator>=list.Count)
+                if (index_first_operator <2 || index_first_operator>=list.Count)
                 {
                     Console.WriteLine("Erreur ");
                     return -9999;
@@ -206,3 +206,4 @@ namespace mahric_operation_polonaise
 
     }
 }
+
